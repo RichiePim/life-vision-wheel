@@ -68,28 +68,41 @@ const WheelChart: React.FC<WheelChartProps> = ({ data, showDesired }) => {
         .attr("stroke", "#e2e8f0")
         .attr("stroke-width", 1);
 
-      // Add curved area labels
-      const labelRadius = radius + 20;
+      // Add curved area labels with increased radius and arc length
+      const labelRadius = radius + 30; // Increased from 20 to 30
       const labelAngle = angle - Math.PI / 2;
-      
-      // Create an arc path for the text to follow
-      const textPath = svg.append("defs")
-        .append("path")
-        .attr("id", `textPath-${i}`)
-        .attr("d", `M${labelRadius * Math.cos(labelAngle)},${labelRadius * Math.sin(labelAngle)} A${labelRadius},${labelRadius} 0 0,1 ${labelRadius * Math.cos(labelAngle + 0.1)},${labelRadius * Math.sin(labelAngle + 0.1)}`);
+      const arcLength = 0.2; // Increased arc length for text
 
-      svg.append("text")
-        .append("textPath")
-        .attr("href", `#textPath-${i}`)
-        .attr("startOffset", "50%")
-        .attr("text-anchor", "middle")
-        .attr("class", "text-sm font-medium")
-        .text(AREAS[i]);
+      // Create an arc path for the text to follow
+      const startAngle = labelAngle - arcLength / 2;
+      const endAngle = labelAngle + arcLength / 2;
+      
+      const arcPath = d3.arc()({
+        innerRadius: labelRadius,
+        outerRadius: labelRadius,
+        startAngle: startAngle,
+        endAngle: endAngle
+      });
+
+      if (arcPath) {
+        svg.append("defs")
+          .append("path")
+          .attr("id", `textPath-${i}`)
+          .attr("d", arcPath);
+
+        svg.append("text")
+          .append("textPath")
+          .attr("href", `#textPath-${i}`)
+          .attr("startOffset", "50%")
+          .attr("text-anchor", "middle")
+          .attr("class", "text-sm font-medium")
+          .text(AREAS[i]);
+      }
     });
 
-    // Draw current values with slight offset
+    // Draw values with slight offset
     const drawValues = (data: WheelData[], isDesired: boolean) => {
-      const offset = isDesired ? 0.05 : -0.05; // Offset for positioning points
+      const offset = isDesired ? 0.05 : -0.05;
       const lineGenerator = d3.lineRadial<WheelData>()
         .angle((d, i) => angleScale(i) - Math.PI / 2 + offset)
         .radius(d => radiusScale(isDesired ? d.desiredValue : d.currentValue))
@@ -107,7 +120,7 @@ const WheelChart: React.FC<WheelChartProps> = ({ data, showDesired }) => {
         .attr("stroke-dasharray", isDesired ? "4,4" : "none")
         .attr("class", "transition-all duration-300");
 
-      // Add interactive points
+      // Add points
       data.forEach((d, i) => {
         const angle = angleScale(i) - Math.PI / 2 + offset;
         const value = isDesired ? d.desiredValue : d.currentValue;
@@ -119,7 +132,7 @@ const WheelChart: React.FC<WheelChartProps> = ({ data, showDesired }) => {
           .attr("cy", y)
           .attr("r", 4)
           .attr("fill", color)
-          .attr("class", "transition-all duration-300 cursor-pointer")
+          .attr("class", "transition-all duration-300")
           .on("mouseover", (event) => {
             const tooltip = d3.select("#wheel-tooltip");
             tooltip

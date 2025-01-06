@@ -76,8 +76,8 @@ const WheelChart: React.FC<WheelChartProps> = ({ data, showDesired }) => {
       const arcGenerator = d3.arc()
         .innerRadius(labelRadius)
         .outerRadius(labelRadius)
-        .startAngle(labelAngle - 0.3)
-        .endAngle(labelAngle + 0.6);
+        .startAngle(labelAngle - 0.5)
+        .endAngle(labelAngle + 0.5);
 
       // Generate the arc path
       const arcPath = arcGenerator({} as any);

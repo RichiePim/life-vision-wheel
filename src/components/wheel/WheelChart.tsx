@@ -68,31 +68,38 @@ const WheelChart: React.FC<WheelChartProps> = ({ data, showDesired }) => {
         .attr("stroke", "#e2e8f0")
         .attr("stroke-width", 1);
 
-      // Add curved area labels with increased radius and arc length
-      const labelRadius = radius + 30; // Increased from 20 to 30
+      // Add curved area labels with proper arc orientation
+      const labelRadius = radius + 30;
       const labelAngle = angle - Math.PI / 2;
-      const arcLength = 0.2; // Increased arc length for text
+      const arcLength = 0.4; // Increased arc length for text
 
-      // Create an arc path for the text to follow
+      // Calculate the correct start and end angles for the arc
       const startAngle = labelAngle - arcLength / 2;
       const endAngle = labelAngle + arcLength / 2;
-      
-      const arcPath = d3.arc()({
-        innerRadius: labelRadius,
-        outerRadius: labelRadius,
-        startAngle: startAngle,
-        endAngle: endAngle
-      });
 
+      // Create the arc path
+      const arcGenerator = d3.arc()
+        .innerRadius(labelRadius)
+        .outerRadius(labelRadius)
+        .startAngle(startAngle)
+        .endAngle(endAngle);
+
+      const arcPath = arcGenerator();
+      
       if (arcPath) {
+        // Create a unique ID for each text path
+        const pathId = `textPath-${i}`;
+        
+        // Add the path definition
         svg.append("defs")
           .append("path")
-          .attr("id", `textPath-${i}`)
+          .attr("id", pathId)
           .attr("d", arcPath);
 
+        // Add the text along the path
         svg.append("text")
           .append("textPath")
-          .attr("href", `#textPath-${i}`)
+          .attr("href", `#${pathId}`)
           .attr("startOffset", "50%")
           .attr("text-anchor", "middle")
           .attr("class", "text-sm font-medium")
@@ -120,7 +127,7 @@ const WheelChart: React.FC<WheelChartProps> = ({ data, showDesired }) => {
         .attr("stroke-dasharray", isDesired ? "4,4" : "none")
         .attr("class", "transition-all duration-300");
 
-      // Add points
+      // Add points with correct index matching
       data.forEach((d, i) => {
         const angle = angleScale(i) - Math.PI / 2 + offset;
         const value = isDesired ? d.desiredValue : d.currentValue;

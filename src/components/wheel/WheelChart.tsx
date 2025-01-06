@@ -30,7 +30,7 @@ const WheelChart: React.FC<WheelChartProps> = ({ data, showDesired }) => {
     // Create scales with 22.5° rotation
     const angleScale = d3.scaleLinear()
       .domain([0, AREAS.length])
-      .range([Math.PI / 8, 2 * Math.PI + Math.PI / 8]); // Start at 22.5° (π/8 radians)
+      .range([0, 2 * Math.PI]); // Start at 22.5° (π/8 radians)
 
     const radiusScale = d3.scaleLinear()
       .domain([0, 10])

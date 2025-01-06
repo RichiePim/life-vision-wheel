@@ -76,8 +76,8 @@ const WheelChart: React.FC<WheelChartProps> = ({ data, showDesired }) => {
       const arcGenerator = d3.arc()
         .innerRadius(labelRadius)
         .outerRadius(labelRadius)
-        .startAngle(labelAngle - 0.4)
-        .endAngle(labelAngle + 0.4);
+        .startAngle(labelAngle - 0.3)
+        .endAngle(labelAngle + 0.6);
 
       // Generate the arc path
       const arcPath = arcGenerator({} as any);
@@ -96,6 +96,7 @@ const WheelChart: React.FC<WheelChartProps> = ({ data, showDesired }) => {
           .attr("startOffset", "50%")
           .attr("text-anchor", "middle")
           .attr("class", "text-sm font-medium")
+          .style("dominant-baseline", "middle") // Ensure vertical alignment is smooth
           .text(AREAS[i]);
       }
     });

@@ -102,7 +102,7 @@ const WheelChart: React.FC<WheelChartProps> = ({ data, showDesired }) => {
 
     // Draw values
     const drawValues = (data: WheelData[], isDesired: boolean) => {
-      const offset = isDesired ? 0.5 : -0.5;
+      const offset = isDesired ? -0.45 : -0.65;
       const lineGenerator = d3.lineRadial<WheelData>()
         .angle((d, i) => angleScale(i) - Math.PI / 2 + offset)
         .radius(d => radiusScale(isDesired ? d.desiredValue : d.currentValue))

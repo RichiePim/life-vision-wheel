@@ -71,20 +71,22 @@ const WheelChart: React.FC<WheelChartProps> = ({ data, showDesired }) => {
       // Add curved area labels with proper arc orientation
       const labelRadius = radius + 30;
       const labelAngle = angle - Math.PI / 2;
-      const arcLength = 0.4; // Increased arc length for text
+      const arcLength = 0.4;
 
       // Calculate the correct start and end angles for the arc
       const startAngle = labelAngle - arcLength / 2;
       const endAngle = labelAngle + arcLength / 2;
 
-      // Create the arc path
+      // Create the arc generator with the correct parameters
       const arcGenerator = d3.arc()
         .innerRadius(labelRadius)
         .outerRadius(labelRadius)
         .startAngle(startAngle)
-        .endAngle(endAngle);
+        .endAngle(endAngle)
+        .cornerRadius(0);
 
-      const arcPath = arcGenerator();
+      // Generate the arc path with an empty object as the datum
+      const arcPath = arcGenerator({} as any);
       
       if (arcPath) {
         // Create a unique ID for each text path

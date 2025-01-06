@@ -177,6 +177,4 @@ const WheelChart: React.FC<WheelChartProps> = ({ data, showDesired }) => {
   );
 };
 
-console.log(`Index: ${i}, Area: ${AREAS[i]}, Angle: ${angle}, Offset: ${offset}`);
-
 export default WheelChart;

@@ -27,10 +27,10 @@ const WheelChart: React.FC<WheelChartProps> = ({ data, showDesired }) => {
       .append("g")
       .attr("transform", `translate(${width / 2},${height / 2})`);
 
-    // Create scales with 22.5° rotation
+    // Create scales  
     const angleScale = d3.scaleLinear()
       .domain([0, AREAS.length])
-      .range([0, 2 * Math.PI]); // Start at 22.5° (π/8 radians)
+      .range([0, 2 * Math.PI]); 
 
     const radiusScale = d3.scaleLinear()
       .domain([0, 10])
@@ -69,7 +69,7 @@ const WheelChart: React.FC<WheelChartProps> = ({ data, showDesired }) => {
         .attr("stroke-width", 1);
 
       // Add curved area labels
-      const labelRadius = radius + 30;
+      const labelRadius = radius + 20;
       const labelAngle = angle - Math.PI / 2;
 
       // Create arc for text path

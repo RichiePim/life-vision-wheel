@@ -27,10 +27,10 @@ const WheelChart: React.FC<WheelChartProps> = ({ data, showDesired }) => {
       .append("g")
       .attr("transform", `translate(${width / 2},${height / 2})`);
 
-    // Create scales
+    // Create scales with 22.5° rotation
     const angleScale = d3.scaleLinear()
       .domain([0, AREAS.length])
-      .range([0, 2 * Math.PI]);
+      .range([Math.PI / 8, 2 * Math.PI + Math.PI / 8]); // Start at 22.5° (π/8 radians)
 
     const radiusScale = d3.scaleLinear()
       .domain([0, 10])
@@ -68,37 +68,28 @@ const WheelChart: React.FC<WheelChartProps> = ({ data, showDesired }) => {
         .attr("stroke", "#e2e8f0")
         .attr("stroke-width", 1);
 
-      // Add curved area labels with proper arc orientation
+      // Add curved area labels
       const labelRadius = radius + 30;
       const labelAngle = angle - Math.PI / 2;
-      const arcLength = 0.4;
 
-      // Calculate the correct start and end angles for the arc
-      const startAngle = labelAngle - arcLength / 2;
-      const endAngle = labelAngle + arcLength / 2;
-
-      // Create the arc generator with the correct parameters
+      // Create arc for text path
       const arcGenerator = d3.arc()
         .innerRadius(labelRadius)
         .outerRadius(labelRadius)
-        .startAngle(startAngle)
-        .endAngle(endAngle)
-        .cornerRadius(0);
+        .startAngle(labelAngle - 0.2)
+        .endAngle(labelAngle + 0.2);
 
-      // Generate the arc path with an empty object as the datum
+      // Generate the arc path
       const arcPath = arcGenerator({} as any);
-      
+
       if (arcPath) {
-        // Create a unique ID for each text path
         const pathId = `textPath-${i}`;
         
-        // Add the path definition
         svg.append("defs")
           .append("path")
           .attr("id", pathId)
           .attr("d", arcPath);
 
-        // Add the text along the path
         svg.append("text")
           .append("textPath")
           .attr("href", `#${pathId}`)
@@ -109,7 +100,7 @@ const WheelChart: React.FC<WheelChartProps> = ({ data, showDesired }) => {
       }
     });
 
-    // Draw values with slight offset
+    // Draw values
     const drawValues = (data: WheelData[], isDesired: boolean) => {
       const offset = isDesired ? 0.05 : -0.05;
       const lineGenerator = d3.lineRadial<WheelData>()
@@ -129,7 +120,7 @@ const WheelChart: React.FC<WheelChartProps> = ({ data, showDesired }) => {
         .attr("stroke-dasharray", isDesired ? "4,4" : "none")
         .attr("class", "transition-all duration-300");
 
-      // Add points with correct index matching
+      // Add points
       data.forEach((d, i) => {
         const angle = angleScale(i) - Math.PI / 2 + offset;
         const value = isDesired ? d.desiredValue : d.currentValue;
